@@ -214,9 +214,14 @@
                     });
                 });
                 if(gmapContext.settings.enableAutocompleteBlur) {
-                  inputBinding.locationNameInput.on("change", function(e) {
-                    if (!e.originalEvent) { return }
-                    blur = true;
+                  inputBinding.locationNameInput.on("keypress", function(e){
+                    if (!e.originalEvent) { return; }
+                    if ((e.keyCode === 13 || e.keyCode == 9)){
+                      if (blur) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                      }
+                    } else { blur = true; }
                   });
                   inputBinding.locationNameInput.on("blur", function(e) {
                     if (!e.originalEvent) { return }

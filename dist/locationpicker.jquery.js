@@ -1,9 +1,9 @@
-/*! jquery-locationpicker - v0.1.15 - 2017-01-29 */
+/*! jquery-locationpicker - v0.1.15 - 2017-02-01 */
 (function($) {
     function GMapContext(domElement, options) {
-        var _map = new google.maps.Map(domElement, options);
+        var _map = options.map instanceof google.maps.Map ? options.map : new google.maps.Map(domElement, options);
         var _marker = new google.maps.Marker({
-            position: new google.maps.LatLng(54.19335, -3.92695),
+            position: _map.getCenter(),
             map: _map,
             title: "Drag Me",
             visible: options.markerVisible,
@@ -35,9 +35,6 @@
     }
     var GmUtility = {
         drawCircle: function(gmapContext, center, radius, options) {
-            if (gmapContext.circle != null) {
-                gmapContext.circle.setMap(null);
-            }
             if (radius > 0) {
                 radius *= 1;
                 options = $.extend({
@@ -50,8 +47,14 @@
                 options.map = gmapContext.map;
                 options.radius = radius;
                 options.center = center;
-                gmapContext.circle = new google.maps.Circle(options);
+                if (gmapContext.circle) {
+                    gmapContext.circle.setValues(options);
+                } else {
+                    gmapContext.circle = new google.maps.Circle(options);
+                }
                 return gmapContext.circle;
+            } else if (gmapContext.circle != null) {
+                gmapContext.circle.setMap(null);
             }
             return null;
         },
@@ -293,6 +296,20 @@
                 }
                 break;
 
+              case "show":
+                if (params == undefined) {
+                    gmapContext.marker.setVisible(true);
+                    gmapContext.circle && gmapContext.circle.setVisible(true);
+                }
+                break;
+
+              case "hide":
+                if (params == undefined) {
+                    gmapContext.marker.setVisible(false);
+                    gmapContext.circle && gmapContext.circle.setVisible(false);
+                }
+                break;
+
               case "map":
                 if (params == undefined) {
                     var locationObj = GmUtility.locationFromLatLng(gmapContext.location);
@@ -321,6 +338,7 @@
             }
             var settings = $.extend({}, $.fn.locationpicker.defaults, options);
             var gmapContext = new GMapContext(this, $.extend({}, {
+                map: settings.map,
                 zoom: settings.zoom,
                 center: new google.maps.LatLng(settings.location.latitude, settings.location.longitude),
                 mapTypeId: settings.mapTypeId,
@@ -374,6 +392,7 @@
         });
     };
     $.fn.locationpicker.defaults = {
+        map: null,
         location: {
             latitude: 40.7324319,
             longitude: -73.82480777777776

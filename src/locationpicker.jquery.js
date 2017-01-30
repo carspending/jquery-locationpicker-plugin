@@ -350,6 +350,19 @@
                         google.maps.event.addListener(gmapContext.map, event, callback);
                     }
                     break;
+                case "show":
+                    if (params == undefined) {
+                        gmapContext.marker.setVisible(true);
+                        gmapContext.circle && gmapContext.circle.setVisible(true);
+                    }
+                    break;
+
+                case "hide":
+                    if (params == undefined) {
+                        gmapContext.marker.setVisible(false);
+                        gmapContext.circle && gmapContext.circle.setVisible(false);
+                    }
+                    break;
                 case "map":
                     /**
                      * Returns object which allows access actual google widget and marker paced on it.

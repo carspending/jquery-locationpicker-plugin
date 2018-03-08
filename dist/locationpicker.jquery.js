@@ -1,4 +1,4 @@
-/*! jquery-locationpicker - v0.1.15 - 2017-02-01 */
+/*! jquery-locationpicker - v0.1.15 - 2018-08-07 */
 (function($) {
     function GMapContext(domElement, options) {
         var _map = options.map instanceof google.maps.Map ? options.map : new google.maps.Map(domElement, options);
@@ -372,7 +372,7 @@
                         updateInputValues(gmapContext.settings.inputBinding, gmapContext);
                     }
                 });
-                gmapContext.map.addListener("idle", function() {
+                gmapContext.map.addListener("dragend", function() {
                     if (!gmapContext.marker.dragging) {
                         displayMarkerWithSelectedArea();
                     }
